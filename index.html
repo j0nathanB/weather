@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Current Weather</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.5/css/weather-icons.min.css'><link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="title">
+          <!-- <h1> </h1> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="jumbotron">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-4 col-xs-offset-2">
+          <h3 id="location"></h3>
+        </div>
+        <div class="col-xs-4 desc">
+          <div>
+            <h3 id="description"></h3>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-4 col-xs-offset-2">
+          <center>
+            <h1>
+            <i class="wi wi-na" id="current-temp"></i>
+            </h1></center>
+        </div>
+        <div class="col-xs-4">
+          <div class="weather-icon">
+            <h1 id="weather-emoji">
+              <!-- <i class="wi wi-na" id="weather-icon"></i> -->
+            </h1>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin: 20px 0 0 0">
+        <div class="col-xs-4 col-xs-offset-2">
+          <center>
+            <div class="btn-group">
+              <button class="btn btn-default" id="convert-celsius">°C</button>
+              <button class="btn btn-default disabled" id="convert-fahrenheit">°F</button>
+            </div>
+          </center>
+        </div>
+        <div class="col-xs-4">
+          <div class="weather-details">
+            <p><i class="wi wi-humidity"></i> <span id="humidity"></span>
+              <br> <i class="wi wi-strong-wind"></i> <span id="wind-speed"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="api">
+  </div>
+
+  <div class="container input-section">
+      <!-- <h1 class="heading">Search</h1> -->
+      <form id="citySubmit">
+      <div class="row input-row">
+        <input type="text" placeholder="Enter a city" autofocus>
+        <button type="submit">SUBMIT</button>
+      </div>
+      <div class="row msg-row">
+        <span class="msg"></span>
+      </div>
+      </form>
+  </div>
+
+  <div id="map"></div>
+</body>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js'></script><script  src="./index.js"></script>
+
+</body>
+</html>
