@@ -1,5 +1,5 @@
-const OPENWEATHERMAP_API = "YOUR_API_KEY";
-const ABSTRACT_API = "YOUR_API_KEY"
+const OPENWEATHERMAP_API = "2551e5bf5c65e8b78903fa8633975dc7"
+const ABSTRACT_API = "e4fa7203c66f46c19e6d181aabf057f7"
 const ipUrl = `https://ipgeolocation.abstractapi.com/v1/?api_key=${ABSTRACT_API}`
 
 const weatherEmojis = {
@@ -31,8 +31,8 @@ function getFlagEmoji(countryCode) {
     const codePoints = countryCode
       .toUpperCase()
       .split('')
-      .map(char =>  127397 + char.charCodeAt());
-    return String.fromCodePoint(...codePoints);
+      .map(char =>  127397 + char.charCodeAt())
+    return String.fromCodePoint(...codePoints)
   }
 
 async function fetchJsonData(url) {
@@ -40,9 +40,22 @@ async function fetchJsonData(url) {
     return response.json()
 }
 
+async function fetchGeoData(input) {
+  const limit = 5
+  const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${input}&limit=${limit}&appid=${OPENWEATHERMAP_API}`
+  const geoData = await fetchJsonData(geoUrl)
+  return geoData[0]
+}
+
+async function fetchWeatherData(lat, lon) {
+  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHERMAP_API}`
+  const weatherData = await fetchJsonData(weatherUrl)
+  return weatherData
+}
+
 function displayWeather(response) {
-  const tempCelsius = response.main.temp - 273.15;
-  const tempFahrenheit = tempCelsius * (9/5) + 32;
+  const tempCelsius = response.main.temp - 273.15
+  const tempFahrenheit = tempCelsius * (9/5) + 32
 
   // display temp based on whether celsius or fahrenheit is selected
   const units = $('#convert-celsius').hasClass("disabled") ? 'metric' : 'imperial'
@@ -51,23 +64,23 @@ function displayWeather(response) {
   const tempUnit = units == 'imperial' ? ' °F' : ' °C'
   const speedUnit = units == 'imperial' ? ' MPH' : ' m/s'
 
-  const description = response.weather[0].main;
-  const iconCode = response.weather[0].icon;
-  const humidity = response.main.humidity;
-  const windSpeedMetric = response.wind.speed;
-  const windSpeedImperial = response.wind.speed * 2.23694;
+  const description = response.weather[0].main
+  const iconCode = response.weather[0].icon
+  const humidity = response.main.humidity
+  const windSpeedMetric = response.wind.speed
+  const windSpeedImperial = response.wind.speed * 2.23694
   
   //Add weather description
-  $("#description").html(description);
-  $("#weather-emoji").html(weatherEmojis[iconCode]);
+  $("#description").html(description)
+  $("#weather-emoji").html(weatherEmojis[iconCode])
 
   //Remove 'N/A' and add temperature
-  $("#current-temp").removeClass("wi wi-na");
-  $("#current-temp").html(temp.toPrecision(3) + `${tempUnit}`);
+  $("#current-temp").removeClass("wi wi-na")
+  $("#current-temp").html(temp.toPrecision(3) + `${tempUnit}`)
   
   //Add humidity and wind speed
-  $("#humidity").html(humidity + "%");
-  $("#wind-speed").html(speed.toPrecision(3) + `${speedUnit}`);
+  $("#humidity").html(humidity + "%")
+  $("#wind-speed").html(speed.toPrecision(3) + `${speedUnit}`)
   
   //Temperature-dependent background images
   if (tempFahrenheit > 70) {
@@ -77,7 +90,7 @@ function displayWeather(response) {
       "-moz-background-size": "cover",
       "-o-background-size": "cover",
       "background-size": "cover"
-    });
+    })
   }
   if (tempFahrenheit <= 70 && tempFahrenheit > 50) {
     $("body").css({
@@ -86,7 +99,7 @@ function displayWeather(response) {
       "-moz-background-size": "cover",
       "-o-background-size": "cover",
       "background-size": "cover"
-    });
+    })
   }
   if (tempFahrenheit <= 50 && tempFahrenheit > 32) {
     $("body").css({
@@ -95,7 +108,7 @@ function displayWeather(response) {
       "-moz-background-size": "cover",
       "-o-background-size": "cover",
       "background-size": "cover"
-    });
+    })
     $(".title").css("color", "rgb(50, 50, 50)")
   }
   if (tempFahrenheit <= 32) {
@@ -105,25 +118,25 @@ function displayWeather(response) {
       "-moz-background-size": "cover",
       "-o-background-size": "cover",
       "background-size": "cover"
-    });
-    $(".title").css("color", "rgb(50, 50, 50)");
+    })
+    $(".title").css("color", "rgb(50, 50, 50)")
   }
   
   //Celsius and Fahrenheit button group
   $("#convert-celsius").on("click", function(e) {
     e.preventDefault()
-    document.getElementById("current-temp").innerHTML = tempCelsius.toPrecision(3) + " °C";
-    document.getElementById("wind-speed").innerHTML = windSpeedMetric + " m/s";
-    $(this).addClass("disabled");
-    $("#convert-fahrenheit").removeClass("disabled");
+    document.getElementById("current-temp").innerHTML = tempCelsius.toPrecision(3) + " °C"
+    document.getElementById("wind-speed").innerHTML = windSpeedMetric + " m/s"
+    $(this).addClass("disabled")
+    $("#convert-fahrenheit").removeClass("disabled")
   })
 
   $("#convert-fahrenheit").on("click", function(e) {
     e.preventDefault()
-    document.getElementById("current-temp").innerHTML = tempFahrenheit.toPrecision(3) + " °F";
-    document.getElementById("wind-speed").innerHTML = windSpeedImperial.toPrecision(3) + " MPH";
-    $(this).addClass("disabled");
-    $("#convert-celsius").removeClass("disabled");
+    document.getElementById("current-temp").innerHTML = tempFahrenheit.toPrecision(3) + " °F"
+    document.getElementById("wind-speed").innerHTML = windSpeedImperial.toPrecision(3) + " MPH"
+    $(this).addClass("disabled")
+    $("#convert-celsius").removeClass("disabled")
   })
 }
 
@@ -132,8 +145,8 @@ $(document).ready(function() {
   function displayCurrentLocation(response) {
     const {city, region, country, country_code} = response
     const flag = getFlagEmoji(country_code)
-    const locationDisplay = `${flag}<br>${city}, ${region},<br>${country} (${country_code})`;
-    document.getElementById("location").innerHTML = locationDisplay;
+    const locationDisplay = `${flag}<br>${city}, ${region},<br>${country} (${country_code})`
+    document.getElementById("location").innerHTML = locationDisplay
   }
   
   async function displayCurrentLocationWeather() {
@@ -141,41 +154,41 @@ $(document).ready(function() {
     displayCurrentLocation(ipData)
     
     const {city, region, country} = ipData
-    const locationQuery = `${city}, ${region}, ${country}`;
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${locationQuery}&appid=${OPENWEATHERMAP_API}`
-    const currentWeatherData = await fetchJsonData(weatherUrl)
+    const locationQuery = `${city}, ${region}, ${country}`
+    const geoData = await fetchGeoData(locationQuery)
+    const {lat, lon} = geoData
+
+    const currentWeatherData = await fetchWeatherData(lat, lon)
     displayWeather(currentWeatherData)
   }
 
   displayCurrentLocationWeather()
-  $('#form').trigger("reset");
+
+  $('#form').trigger("reset")
   $('input').val("")
 })
 
 $("#citySubmit").submit( e => {
-  e.preventDefault();
+  e.preventDefault()
   async function main(){
     try {
-        e.preventDefault();
-        let inputVal = $('input').val();
-
-        const limit = 5
-        const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${inputVal}&limit=${limit}&appid=${OPENWEATHERMAP_API}`
-        const geoData = await fetchJsonData(geoUrl)
-        const {state, lat, lon, country} = geoData[0]
-        const geoName = geoData[0]['name']
-        const weatherLatLonUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHERMAP_API}`
-        const weatherData = await fetchJsonData(weatherLatLonUrl)
+        e.preventDefault()
+        let inputVal = $('input').val()
+        geoData = await fetchGeoData(inputVal)
+        
+        const {state, lat, lon, country} = geoData
+        const geoName = geoData['name']
+        const weatherData = await fetchWeatherData(lat, lon)
 
         displayWeather(weatherData)
 
         const flag = getFlagEmoji(country)
-        let regionNames = new Intl.DisplayNames(['en'], {type: 'region'});
-        const countryName = regionNames.of(country);
+        let regionNames = new Intl.DisplayNames(['en'], {type: 'region'})
+        const countryName = regionNames.of(country)
 
-        $("#location").html(`${flag}<br>${geoName}${state ? ', ' + state : ''}<br>${countryName} (${country})`);
-        $(".msg").text("");
-        $('#form').trigger("reset");
+        $("#location").html(`${flag}<br>${geoName}${state ? ', ' + state : ''}<br>${countryName} (${country})`)
+        $(".msg").text("")
+        $('#form').trigger("reset")
         $('input').val("")
     } catch (e) {
         console.log(`error: ${e}`)
@@ -184,4 +197,4 @@ $("#citySubmit").submit( e => {
   }
 
   main()
-});
+})
