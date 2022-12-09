@@ -53,6 +53,23 @@ async function fetchWeatherData(lat, lon) {
   return weatherData
 }
 
+function loadMap(lat, lon) {
+  const map = L.map('map').setView([lat, lon], 13);
+
+  Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+	maxZoom: 16}).addTo(map)
+}
+
+function updateMap(lat, lon) {
+  const map = L.map('map')
+  map = map.remove()
+  map.flyTo([40.737, -73.923], 8)
+  // Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+	// attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+	// maxZoom: 16}).addTo(map)
+}
+
 function displayWeather(response) {
   const tempCelsius = response.main.temp - 273.15
   const tempFahrenheit = tempCelsius * (9/5) + 32
@@ -160,6 +177,7 @@ $(document).ready(function() {
 
     const currentWeatherData = await fetchWeatherData(lat, lon)
     displayWeather(currentWeatherData)
+    // loadMap(lat, lon)
   }
 
   displayCurrentLocationWeather()
@@ -181,6 +199,7 @@ $("#citySubmit").submit( e => {
         const weatherData = await fetchWeatherData(lat, lon)
 
         displayWeather(weatherData)
+        // updateMap(lat, lon)
 
         const flag = getFlagEmoji(country)
         let regionNames = new Intl.DisplayNames(['en'], {type: 'region'})
