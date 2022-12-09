@@ -1,6 +1,10 @@
-const OPENWEATHERMAP_API = "2551e5bf5c65e8b78903fa8633975dc7"
-const ABSTRACT_API = "e4fa7203c66f46c19e6d181aabf057f7"
+const OPENWEATHERMAP_API = "YOUR_API_KEY"
+const ABSTRACT_API = "YOUR_API_KEY"
 const ipUrl = `https://ipgeolocation.abstractapi.com/v1/?api_key=${ABSTRACT_API}`
+const map = L.map('map').setView([0,0], 13);
+Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+maxZoom: 13}).addTo(map)
 
 const weatherEmojis = {
     '01d':'☀️',
@@ -53,21 +57,8 @@ async function fetchWeatherData(lat, lon) {
   return weatherData
 }
 
-function loadMap(lat, lon) {
-  const map = L.map('map').setView([lat, lon], 13);
-
-  Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
-	maxZoom: 16}).addTo(map)
-}
-
 function updateMap(lat, lon) {
-  const map = L.map('map')
-  map = map.remove()
-  map.flyTo([40.737, -73.923], 8)
-  // Esri_NatGeoWorldMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
-	// attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
-	// maxZoom: 16}).addTo(map)
+  map.panTo([lat, lon], 13);
 }
 
 function displayWeather(response) {
@@ -177,7 +168,7 @@ $(document).ready(function() {
 
     const currentWeatherData = await fetchWeatherData(lat, lon)
     displayWeather(currentWeatherData)
-    // loadMap(lat, lon)
+    updateMap(lat, lon)
   }
 
   displayCurrentLocationWeather()
@@ -199,7 +190,7 @@ $("#citySubmit").submit( e => {
         const weatherData = await fetchWeatherData(lat, lon)
 
         displayWeather(weatherData)
-        // updateMap(lat, lon)
+        updateMap(lat, lon)
 
         const flag = getFlagEmoji(country)
         let regionNames = new Intl.DisplayNames(['en'], {type: 'region'})
